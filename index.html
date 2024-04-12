@@ -1,0 +1,829 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Build with AI - Flutter Web Codelab</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements-tmp/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="buildwithai-flutter"
+                  title="Build with AI - Flutter Web Codelab"
+                  environment="web"
+                  feedback-link="https://romanjustcodes.web.app">
+    
+      <google-codelab-step label="Overview" duration="0">
+        <h2 is-upgraded>Welcome to the exciting world of Gemini and Flutter Web!</h2>
+<h2 is-upgraded>NOTE: THIS IS NOT A BEGINNER CODELAB</h2>
+<p>(If you&#39;re looking for more beginner content, please visit some of my other codelabs <a href="https://romanjustcodes.web.app/#/workshops" target="_blank">here</a>). If you&#39;re up for the challenge, then proceed.</p>
+<p>This is a codelab series focused on Flutter and Gemini, in which you&#39;ll learn the following:</p>
+<ul>
+<li>Building Layouts in Flutter</li>
+<li>State Management using Riverpod</li>
+<li>Gemini Integration: how to supercharge your Flutter Web Apps using the power of AI</li>
+</ul>
+<p>The bottom image is a screenshot of what we&#39;ll be building during this session, so follow along:</p>
+<p class="image-container"><img alt="App" src="img/3cf13ce83fccd38b.png"></p>
+<h2 is-upgraded>Prerequisites:</h2>
+<ul>
+<li>Install the <a href="https://docs.flutter.dev/get-started/install?_gl=1*1brl6tq*_up*MQ..&gclid=Cj0KCQjwlN6wBhCcARIsAKZvD5glFQAhQexfPyPp_iD_d8TDJXVEkrWi764bce2rvf0kCwIab8ycg2QaApVeEALw_wcB&gclsrc=aw.ds" target="_blank">Flutter SDK</a></li>
+<li>Install the <a href="https://pub.dev/packages/google_generative_ai" target="_blank">Google AI Dart SDK</a> (plus other dependencies)</li>
+<li>Get a Gemini API Key using <a href="https://ai.google.dev/?authuser=2" target="_blank">Google AI Studio</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Install Flutter" duration="0">
+        <p><a href="https://flutter.dev/" target="_blank"><strong>Flutter</strong></a> is an open-source UI Toolkit supported by Google for building beautiful, natively-compiled user interfaces in a multi-platform fashion, using <a href="https://dart.dev/" target="_blank"><strong>Dart</strong></a>, another open-source programming language supported by Google, as its core language.</p>
+<p><a href="https://flutter.dev/multi-platform/web" target="_blank"><strong>Flutter for Web</strong></a> provides the lowest barrier to entry when it comes to becoming a profilic Flutter developer. Most of the concepts learned in Flutter can be applied in a multi-platform scenario, and web is not an exception, so join us in building compelling web apps by going through the codelabs in this series.</p>
+<p>Let&#39;s perform the following steps:</p>
+<ul>
+<li>Download the <a href="https://docs.flutter.dev/get-started/install?_gl=1*1brl6tq*_up*MQ..&gclid=Cj0KCQjwlN6wBhCcARIsAKZvD5glFQAhQexfPyPp_iD_d8TDJXVEkrWi764bce2rvf0kCwIab8ycg2QaApVeEALw_wcB&gclsrc=aw.ds" target="_blank">Flutter SDK</a> according to your corresponding machine architecture and set it up to develop for the web. Proceed with the installation.</li>
+<li>We&#39;ll use Chrome as our device to test so once the Flutter SDK is installed, take it for a first spin by running the following command:</li>
+</ul>
+<pre><code language="language-dart" class="language-dart">flutter run -d chrome
+
+</code></pre>
+<p><strong>NOTE</strong>: there is no hot-reload unfortunately while developing for the web, only hot restart.</p>
+<p>After loading it for the first time, make sure you can see the sample Flutter Web project, as such:</p>
+<p class="image-container"><img alt="App" src="img/cb844692c8b0fb59.png"></p>
+<h2 is-upgraded>Install Dependencies</h2>
+<p>We&#39;ll be installing the following dependencies:</p>
+<ul>
+<li>For state manaagemnet, install <a href="https://pub.dev/packages/flutter_riverpod" target="_blank">flutter_riverpod</a></li>
+<li>For the Gemini API integration, we&#39;ll use <a href="https://pub.dev/packages/google_generative_ai" target="_blank">google_generative_ai</a></li>
+<li>For icons, we&#39;ll use <a href="https://pub.dev/packages/community_material_icon" target="_blank">community_material_icon</a></li>
+</ul>
+<p>You can install them by running the following command in the command line:</p>
+<pre><code language="language-dart" class="language-dart">flutter pub add flutter_riverpod google_generative_ai community_material_icon
+
+</code></pre>
+<p>With the dependencies in place and the project up and running, let&#39;s proceed!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Get a Gemini API key" duration="0">
+        <p><a href="https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChcSEwjm0qCA07uFAxWoakcBHTb9B_MYABABGgJxdQ&ase=2&gclid=Cj0KCQjwlN6wBhCcARIsAKZvD5hhoX4NBHsU5ajiwLmUJPqSgkjHLFkYdwpLZz5L-4iLKWfrtgmNfJgaAuI6EALw_wcB&ohost=www.google.com&cid=CAESVuD2ygxQWbuyb9o3P5JbSCgJLYFXknTYAZqfnIiizTEcreRZPyrGdiOWIPnhiBe9mg8sBm_XQc75xX3XIN_D201vzmN_PQsNO8kchLtqAHMU0Unp7uE7&sig=AOD64_1dPKqP4bfwQrF-Dc-vo2_G2tN9jg&q&nis=4&adurl&ved=2ahUKEwiDjJqA07uFAxXwg4kEHdU9CD4Q0Qx6BAgHEAE" target="_blank">Gemini</a> is a family of multimodal large language models developed by Google DeepMind, serving as the successor to LaMDA and PaLM 2. Comprising Gemini Ultra, Gemini Pro, and Gemini Nano, it was announced on December 6, 2023, positioned as a competitor to OpenAI&#39;s GPT-4.</p>
+<p>In order to talk to Gemini, we&#39;ll use the Gemini API, and for that we&#39;ll require an API Key, which we&#39;ll supply to Flutter through the Google AI Dark SDK.</p>
+<p>Go to <a href="aistudio.google.com" target="_blank">Google AI Studio</a>, and sign in with a GMail account.</p>
+<p class="image-container"><img alt="App" src="img/17ead8ebc43c8cc1.png"></p>
+<p>Since we&#39;ll be developing in our own environment, make sure to select the <strong>Develop in your own environment</strong> option - click on <strong>Get API key</strong>:</p>
+<p class="image-container"><img alt="App" src="img/845df667196445b.png"></p>
+<p>Consent to all applicable options - click <strong>Continue</strong>:</p>
+<p class="image-container"><img alt="App" src="img/e1efc78044d075df.png"></p>
+<p>API Keys are associated with a Google Cloud project. Click on <strong>Create API Key</strong>, then select whether to associate it with an existing project, or create a new project.</p>
+<p class="image-container"><img alt="App" src="img/f2f8f3df911019d5.png"></p>
+<p class="image-container"><img alt="App" src="img/98337aee194abaf8.png"></p>
+<p>Once the key is generated, save it locally somewhere - we&#39;ll be needing this later and offer ways to secure it.</p>
+<p class="image-container"><img alt="App" src="img/f922ac38eacf6d25.png"></p>
+<p>With our API Key in hand, let&#39;s proceed to build the app, shall we?</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Building the App" duration="0">
+        <p>The bottom is a brief schematics of what we&#39;ll be tackling from the widget composition perspective:</p>
+<p class="image-container"><img alt="App" src="img/6aa7c4a4a2f6733c.png"></p>
+<p>As you know, everything in Flutter is a widget, and Flutter gives you full control of what can be considered a widget and how to paint it on the screen - you own every pixel! This is where Flutter shines.</p>
+<h2 is-upgraded>Add the root app widget</h2>
+<p>Let&#39;s start by setting up the initial plumbing of the application. We&#39;ll start by creating the root app widget.</p>
+<p>Navigate to your project, and start by removing everything from your <strong>main.dart</strong> file.</p>
+<h2 is-upgraded>For simplicity and for the sake of this codelab, we&#39;ll concentrate on only the <strong>main.dart</strong> file so all widgets will be added here, but as a best practice each widget should live within its own file - food for thought!</h2>
+<p><strong>NOTE</strong>: as we assemble the app, you may get temporary errors - do not fret! This is part of the building progress and things should fall into place as we make progress. Keep pushing through!</p>
+<p>Proceed to add all dependencies required by this project, and the root app widget, named <strong>GeminiTempApp</strong>:</p>
+<pre><code language="language-dart" class="language-dart">// dependencies
+import &#39;dart:convert&#39;;
+import &#39;package:community_material_icon/community_material_icon.dart&#39;;
+import &#39;package:flutter/material.dart&#39;;
+import &#39;package:flutter/services.dart&#39;;
+import &#39;package:flutter_riverpod/flutter_riverpod.dart&#39;;
+import &#39;package:google_generative_ai/google_generative_ai.dart&#39;;
+
+
+// root widget
+void main() {
+  runApp(const ProviderScope(child: GeminiTempApp()));
+}
+
+</code></pre>
+<p>Notice how the <strong>GeminiTempApp</strong> root widget is wrapped inside a <strong>ProviderScope</strong> - this is provided by Riverpod and it is what will facilitate creating a scope around our app so we can implement a state management solution using Riverpod.</p>
+<h2 is-upgraded>Add the main GeminiTempMain widget</h2>
+<p>Proceed down the line and create the scaffolding for the <strong>GeminiTempApp</strong> root widget, which should return as a child a <strong>MaterialApp</strong> widget (which wraps all Material styling) and the core main widget that encapsulates all functionality, which will be called <strong>GeminiTempMain</strong>, as such:</p>
+<pre><code language="language-dart" class="language-dart">// rest of the code omitted for brevity
+
+class GeminiTempApp extends StatelessWidget {
+  const GeminiTempApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: GeminiTempMain(),
+    );
+  }
+}
+
+
+</code></pre>
+<p>The <strong>GeminiTempMain</strong> will encapsulate the main functionality for this app, and will contain the following:</p>
+<ul>
+<li>A root <strong>Scaffold</strong> widget that will wrap all child widgets</li>
+<li>As a direct child of the <strong>Scaffold</strong>, a <strong>Stack</strong> widget, since we want to lay down our widgets in a stacked fashion.</li>
+<li>This widget will inherit from <strong>ConsumerWidget</strong> since we&#39;ll use it to inject state management dependencies from Riverpod.</li>
+</ul>
+<p>Add the following code below the existing one:</p>
+<pre><code language="language-dart" class="language-dart">// rest of the code omitted
+
+class GeminiTempMain extends ConsumerWidget {
+  const GeminiTempMain({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    return Scaffold(
+      body: Stack(
+        children: [
+
+            // REST OF THE CODE WILL RESIDE HERE
+        ]  
+      )
+    );
+  }
+}
+
+</code></pre>
+<h2 is-upgraded>FROM THIS POINT ON, WE&#39;LL FOCUS ON THE CHILD WIDGETS INSIDE THE STACK</h2>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Adding the background" duration="0">
+        <p>We want the widget that will represent the gradient background as a separate widget. This will be a simple <strong>Container</strong> with some styling using a <strong>BoxDecoration</strong> with a <strong>LinearGradient</strong> applied to it.</p>
+<p class="image-container"><img alt="App" src="img/5cad79c528d23ddb.png"></p>
+<p>Create the placeholder widget as the first widget inside the <strong>Stack</strong>:</p>
+<pre><code language="language-dart" class="language-dart">/// inside the Stack widget, add this line:
+
+const GeminiTempBg(),
+
+</code></pre>
+<p>Now, let&#39;s proceed to create the actual <strong>GeminiTempBg</strong> widget:</p>
+<pre><code language="language-dart" class="language-dart">class GeminiTempBg extends StatelessWidget {
+  const GeminiTempBg({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.purple,
+            Colors.deepPurple,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter
+        )
+      ),
+    );
+  }
+}
+
+</code></pre>
+<p>Take it for a spin by re-running the app (hitting ‘R&#39; to trigger a hot restart, or a full restart with <code>flutter run -d chrome</code> as before).</p>
+<p>Confirm that you can see the gradient widget in your browser - proof that things are working as expected!.</p>
+<p>Proceed to the next step!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Adding Icons" duration="0">
+        <p>Let&#39;s make this app a bit cheerful by adding some icons, shall we! Continue assembling the layout of this app by going back to our <strong>Stack</strong> widget inside the <strong>GeminiTempMain</strong> widget, and right under the <strong>GeminiTempBg</strong> widget, let&#39;s start by creating a layout that will positiion its children vertically centered. For that, we&#39;ll do a <strong>Column</strong> widget, wrapped inside a <strong>Center</strong> widget, as such:</p>
+<pre><code language="language-dart" class="language-dart">// under the GeminiTempBg widget, add the following:
+
+Center(
+    child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+
+            // ALL OTHER WIDGETS WILL GO HERE
+        ]
+    )
+)
+
+</code></pre>
+<p>We are using the <strong>Community Material Icons</strong> package, which gives you a large selection of widgets to choose from. Check them out <a href="https://pictogrammers.com/library/mdi/" target="_blank">here</a>.</p>
+<p>As our first child in the <strong>Column</strong> widget, add the following piece of code:</p>
+<pre><code language="language-dart" class="language-dart">Icon(
+    CommunityMaterialIcons.leaf_maple, 
+    size: 100, 
+    color: Colors.white.withOpacity(0.75)
+),
+
+</code></pre>
+<p>Re-run or reload the app and verify that we get the following output:</p>
+<p class="image-container"><img alt="App" src="img/7e7e3e2c21ec0c97.png"></p>
+<p>Yes, we&#39;re cooking! We&#39;ll be adding more icons later, so now you know how to implement them. We&#39;ll focus for a bit on the plumbing of the application that provide the core functionality.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create the core models, viewmodels and classes" duration="0">
+        <h2 is-upgraded>Add required enums</h2>
+<p>We will start by creating a Dart enumeration that represents the temperature conversion options (Celsius and Fahrenheit); we&#39;ll make it as an enhanced enum so we can tack on more functionality to it.</p>
+<p>Anywhere at the bottom of the file, add the following:</p>
+<pre><code language="language-dart" class="language-dart">enum GeminiTempOptions {
+  fahrenheit2celsius(&#39;°F&#39;),
+  celsius2fahrenheit(&#39;°C&#39;);
+
+  final String label;
+  const GeminiTempOptions(this.label);
+}
+
+</code></pre>
+<p>Notice this is more than a regular <strong>enum</strong> - this one is used more like a struct or an object that packs on additional functionality besides the enumeration values. Pretty handy!</p>
+<h2 is-upgraded>Add a GeminiRequest and GeminiResponse classes</h2>
+<p>In order to make things more organized and create some sort of an API around the requests we&#39;ll be making to Gemini, I like to create PODO (Plain Ol&#39; Dart Object) model classes that represent the actions to be made inside the application and encapsulate the user&#39;s intent.</p>
+<p>We want to request from Gemini that it converts a temperature from Celsius to Fahrenheit and viceversa, given a <strong>temp</strong> value, so that&#39;s exactly what we&#39;ll create.</p>
+<p>Anywhere in the <strong>main.dart</strong> file (at the bottom, preferably), add the following class:</p>
+<pre><code language="language-dart" class="language-dart">class GeminiTempRequest {
+  final GeminiTempOptions conversion;
+  final double temp;
+
+  GeminiTempRequest({
+    required this.conversion,
+    required this.temp
+  });
+
+  String toJson() {
+    return json.encoder.convert({
+      &#39;conversion&#39;: conversion.name,
+      &#39;temp&#39;: temp,
+    });
+  }
+}
+
+</code></pre>
+<p>This class called <strong>GeminiTempRequest</strong> encapsulates the request made by the user to Gemini, and even exposes a method to convert its data to a JSON (in case we want to send this to an API that uses Gemini behind the scenes).</p>
+<p>Proceed now to create another PODO class called <strong>GeminiTempResponse</strong> which does the opposite - captures the response from Gemini and encapsulates it into a neat model, confirming what the conversion was (<strong>conversion</strong> property), what the input value was (<strong>inputValue</strong> property) and what the result of the conversion was (<strong>outputValue</strong> property). It also exposes a <strong>fromJSON</strong> factory constructor to map the payload into a <strong>GeminiTempResponse</strong> instance, for further consumption in my app.</p>
+<p>I&#39;m adding an additional <strong>static</strong> utility method called <strong>empty</strong> for when I want just an empty instance of this PODO class, for initialization / resetting purposes.</p>
+<p>Anywhere in the <strong>main.dart</strong> file, perhaps below the <strong>GeminiTempRequest</strong> class, add the following class:</p>
+<pre><code language="language-dart" class="language-dart">class GeminiTempResponse {
+  final GeminiTempOptions conversion;
+  final double inputValue;
+  final double outputValue;
+
+  const GeminiTempResponse({
+    required this.inputValue,
+    required this.outputValue,
+    required this.conversion,
+  });
+
+  factory GeminiTempResponse.fromJSON(Map&lt;String, dynamic&gt; json) {
+    return GeminiTempResponse(
+      inputValue: json[&#39;inputValue&#39;], 
+      outputValue: json[&#39;outputValue&#39;], 
+      conversion: GeminiTempOptions.values.firstWhere((c) =&gt; c.name == json[&#39;conversion&#39;]),
+    );
+  }
+  
+  static GeminiTempResponse empty() {
+    return const GeminiTempResponse(conversion: GeminiTempOptions.celsius2fahrenheit, inputValue: 0, outputValue: 0);
+  }
+}
+
+</code></pre>
+<h2 is-upgraded>Add the required state management providers</h2>
+<p>For this appplication to work, we need to add entities that allow communication between widgets, maintain state throughout our app and broadcast when changes occur so that our UI comes to life and displays the correct information at all times upon state changes.</p>
+<p>Providers of type <strong>Provider</strong> are the simplest type of providers in Riverpod, and they simply wrap an instance of a given entity to be fed to the application.</p>
+<p>Providers of <strong>StateProvider</strong> wrap a value and notify of its changes to any subscribed listeners.</p>
+<p>Add the following providers to the <strong>main.dart</strong> file at the bottom:</p>
+<pre><code language="language-dart" class="language-dart">// providers 
+
+final tempFieldController = Provider((ref) {
+  return TextEditingController();
+});
+
+final tempDisplayValueProvider = StateProvider&lt;double&gt;((ref) {
+  return 0;
+});
+
+final tempInputValueProvider = StateProvider&lt;String&gt;((ref) {
+  return &#39;&#39;;
+});
+
+final tempRetrievalFlagProvider = StateProvider&lt;bool&gt;((ref) {
+  return false;
+});
+
+final tempConversionOptionProvider = StateProvider&lt;GeminiTempOptions&gt;((ref) =&gt; GeminiTempOptions.celsius2fahrenheit);
+
+final tempInverseConversionProvider = Provider((ref) {
+  final selectedConversion = ref.watch(tempConversionOptionProvider);
+  return selectedConversion == GeminiTempOptions.celsius2fahrenheit ? GeminiTempOptions.fahrenheit2celsius : GeminiTempOptions.celsius2fahrenheit;
+});
+
+</code></pre>
+<p>Let&#39;s break it down for a second:</p>
+<ul>
+<li><strong>tempFieldController</strong> provides an instance of type <strong>TextEditingController</strong> which will be hooked up to an text input field in the <strong>GeminiTempInput</strong> widget - later in this codelab</li>
+<li><strong>tempDisplayValueProvider</strong> provides a <strong>double</strong> value to show the converted value</li>
+<li><strong>tempInputValueProvider</strong> captures the input from the text input field as a String, which later gets converted</li>
+<li><strong>tempRetrievalFlagProvider</strong> encapsulates a <strong>boolean</strong> flag to illustrate whether a value is being fetched from Gemini</li>
+<li><strong>tempInverseConversionProvider</strong> listens to another Provider instance (<strong>tempConversionOptionProvider</strong>) and based on the broadcasted value, returns the proper temp scale. This is one of the advantages of providers of type <strong>Provider</strong> that they can &#34;watch&#34; or listen to other providers for their values if they choose to depend on it for further processing.</li>
+</ul>
+<p>With all of this in place, let&#39;s proceed to create the entity that will handle the functionality and binds things together and hooks up the action of fetching the temperature to the user interface. Let&#39;s devote a whole step for this as this is a crucial step. See you on the next step!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Creating a ViewModel class" duration="0">
+        <p>We&#39;ll be using the MVVM pattern to create a clean separation between the UI and the models that provide the data. We&#39;ll create a class called <strong>GeminiTempLocalRetrievalViewModel</strong>, which will encapsulate the following functionality:</p>
+<ul>
+<li>conversion of a temperature from the desired temp scale to another and viceversa</li>
+<li>resetting the values and fields in the UI to allow other temperatures to be converted</li>
+<li>handling the toggle between one temp scale to the other</li>
+</ul>
+<p>Create the following class, that inherits from <strong>StateNotifier</strong> of type <strong>boolean</strong>, which represents whether the operation was successful or not. <strong>StateNotifier</strong> is a type of class available in Riverpod that denotes that this class will broadcast state updates so the UI rebuilds itself accordingly upon state changes (the boolean state whether the operation was successful or not):</p>
+<pre><code language="language-dart" class="language-dart">class GeminiTempLocalRetrievalViewModel extends StateNotifier&lt;bool&gt; {
+
+  final Ref ref;
+  GeminiTempLocalRetrievalViewModel(this.ref, super._state);
+
+}
+
+</code></pre>
+<p>Inside of this class, create a method called <strong>convertTemp</strong>, which will encapsulate the following functionality:</p>
+<ul>
+<li>read the temperature provided by the user</li>
+<li>capture the desired conversion</li>
+<li>assemble the request</li>
+<li>generate the prompt and assemble it with the user-provided values and send it to Gemini, provided the API_KEY value (make sure to add your own key!)</li>
+<li>capture the response from Gemini</li>
+<li>map the response from Gemini into a GeminiTempResponse for app consumption</li>
+<li>notify the UI that the value is ready to consume</li>
+</ul>
+<p>Add the following piece of code inside the viewmodel class:</p>
+<pre><code language="language-dart" class="language-dart">// inside our viewmodel class...
+
+Future&lt;void&gt; convertTemp() async {
+
+    state = true;
+
+    var tempValue = ref.read(tempInputValueProvider);
+    var selectedConversion = ref.read(tempConversionOptionProvider);
+
+    var fromToConversion = selectedConversion.name.split(&#39;2&#39;);
+    var fromValue = fromToConversion[0];
+    var toValue = fromToConversion[1];
+
+    final req = GeminiTempRequest(
+      conversion: selectedConversion, 
+      temp: double.parse(tempValue),
+    );
+
+    var prompt = &#39;&#39;&#39;generate a JSON payload that returns the conversion of 
+    weather from farenheit to celsius and viceversa; return a JSON
+    payload containing the following properties -
+    conversion: which is the value of the conversion, in this case it should read 
+    &#34;${req.conversion.name}&#34; depending on the conversion;
+    inputValue, which is the value of ${req.temp} to convert from $fromValue;  
+    outputValue, which is the result from the conversion to $toValue.
+    Do not return code, just the resulting JSON payload.
+    Do not return the word JSON in the payload&#39;&#39;&#39;;
+
+    try {
+        final content = [Content.text(prompt)];
+
+        final model = GenerativeModel(
+            model: &#39;gemini-pro&#39;, 
+            apiKey: &#39;&lt;ADD-API-KEY&gt;&#39;
+        );
+        final response = await model.generateContent(content);
+
+        var jsonResponse = json.decode(response.text!);
+        var geminiResponse = GeminiTempResponse.fromJSON(jsonResponse);
+        ref.read(tempDisplayValueProvider.notifier).state = geminiResponse.outputValue;
+
+    } on Exception {
+      ref.read(tempDisplayValueProvider.notifier).state = 0;
+    }
+
+    state = false;
+  }
+
+</code></pre>
+<p>Let&#39;s dissect the prompting aspect of this piece of code. Providing the correct prompt to Gemini is key to obtaining the desired output from it. Here we are asking Gemini to &#34;generate a JSON payload&#34; as output. We are also using variable interpolation to replace the key aspects of this prompt, which makes this prompt highly dynamic. We emphasize on things such as &#34;Do not return code, just the payload&#34; and &#34;Do not return the word JSON in the payload&#34; as in certain occasions, the model returns garbage that impedes us from parsing the response appropriately.</p>
+<p>Then, we call the method <code>model.generateContent</code> passing the assembled prompt, and expect some text content, which we immediately run it through the <strong>json.decode</strong> utility method to parse it as a JSON.</p>
+<p>Finally, we convert the JSON mapping into a <strong>GeminiTempReponse</strong> instance using the provided <strong>fromJSON</strong> factory constructor, and update our <strong>tempDisplayValueProvider</strong> provider instance, which after being mutated, notifies the UI to rebuild itself with the corresponding value.</p>
+<h2 is-upgraded>Add the ability to reset values</h2>
+<p>Inside our viewmodel class, add a method called <strong>resetValues</strong> to reset the values back to default to allow the user to input another temp to be converted, as such:</p>
+<pre><code language="language-dart" class="language-dart">void resetValues() {
+    ref.read(tempFieldController).clear();
+    ref.read(tempInputValueProvider.notifier).state = &#39;&#39;;
+    ref.read(tempDisplayValueProvider.notifier).state = 0;
+}
+
+</code></pre>
+<p>Notice how we, using the injected <strong>ref</strong> reference from Riverpod, we locate the corresponding providers, and perform operations against them.</p>
+<h2 is-upgraded>Add the ability to capture the desired temp conversions</h2>
+<p>Add one more method to capture the selection from the user of the conversion they want to perform. This will be consumed by a widget later that collects this value from the user. Add it for now:</p>
+<pre><code language="language-dart" class="language-dart">void onSelectConversion(GeminiTempOptions tempOption) {
+    resetValues();
+    ref.read(tempConversionOptionProvider.notifier).state = tempOption;
+}
+
+</code></pre>
+<h2 is-upgraded>Adding a StateNotifierProvider</h2>
+<p>Now, in order to make this viewmodel class discoverable and consumable by widgets in our application, we must wrap it inside a corresponding provider - in this case, a <strong>StateNotifierProvider</strong> type of provider. This allows for the UI to watch changes in its state and rebuilding accordingly.</p>
+<p>Add this additional provider along with the other providers added earlier:</p>
+<pre><code language="language-dart" class="language-dart">// below the other providers, so they&#39;re all together
+
+final geminiRetrievalLocalVMProvider = 
+    StateNotifierProvider&lt;GeminiTempLocalRetrievalViewModel, bool&gt;((ref) {
+        return GeminiTempLocalRetrievalViewModel(ref, false);
+    });
+
+</code></pre>
+<p>Notice how we inject a <strong>Ref</strong> reference, which is the entity that allows this viewmodel to fetch other providers and communicate with them in a decoupled fashion.</p>
+<p>I think we&#39;re pretty much all set on core functionality and logic. Now let&#39;s proceed to create the corresponding UI that will hook up to these. Let&#39;s go to the next step.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Display the temperature" duration="0">
+        <p>For displaying the temperature, we&#39;ll create a custom widget called <strong>GeminiTempDisplay</strong>, which will encapsulate the converted temperature value.</p>
+<p class="image-container"><img alt="App" src="img/ec85e4d17e17e013.png"></p>
+<p>As before, let&#39;s create first the placeholder widget as part of our <strong>Column</strong> widgets.</p>
+<p>Right under the <strong>Icon</strong> we created earlier, add the following line:</p>
+<pre><code language="language-dart" class="language-dart">// under the Icon above...
+
+const GeminiTempDisplay(),
+
+</code></pre>
+<p>The <strong>GeminiTempDisplay</strong> widget will be a custom widget that will handle the display of the temperature as such:</p>
+<ul>
+<li>an icon representing a thermometer</li>
+<li>a <strong>Consumer</strong> widget that changes its inner structure from a <strong>CircularProgressIndicator</strong> when the value of the <strong>geminiRetrievalLocalVMProvider</strong> changes state, to a <strong>Text</strong> widget once the value is available</li>
+<li>a <strong>Consumer</strong> widget that watches for changes occurring in the <strong>tempInverseConversionProvider</strong> provider so it renders accordingly, displaying the correct label depending on the selected conversion.</li>
+</ul>
+<p>The code for the <strong>GemminiTempDisplay</strong> widget is below; copy and paste it anywhere in the <strong>main.dart</strong> file, anywhere below the <strong>GeminiTempMain</strong> widget, as such:</p>
+<pre><code language="language-dart" class="language-dart">// rest of the code omitted for brevity
+
+class GeminiTempDisplay extends StatelessWidget {
+  const GeminiTempDisplay({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+
+        // icon
+        Icon(
+            CommunityMaterialIcons.thermometer_lines, 
+            size: 100, 
+            color: Colors.white.withOpacity(0.75)
+        ),
+
+        // spacing
+        const SizedBox(width: 16),
+
+        // consume the temp value
+        Consumer(
+          builder: (context, ref, child) {
+
+            // watch on the result of the viewmodel&#39;s operation
+            final dataRetrieved = ref.watch(geminiRetrievalLocalVMProvider);
+
+            // watch on the temp value to be displayed
+            final tempValue = ref.watch(tempDisplayValueProvider);
+
+            // show a progress indicator if data is being retrieved...
+            if (dataRetrieved) {
+              return Container(
+                alignment: Alignment.center,
+                constraints: const BoxConstraints(
+                  minHeight: 150,
+                  minWidth: 150,
+                ),
+                child: const SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(Colors.white),
+                  ),
+                ),
+              );
+            }
+            
+            // otherwise show whatever value is available, formatted appropriately
+            return Text(tempValue.toStringAsFixed(1), style: const TextStyle(
+              color: Colors.white,
+              fontSize: 100,
+              fontWeight: FontWeight.bold,
+            ));
+            
+          }
+        ),
+
+        // more spacing
+        const SizedBox(width: 20),
+
+        // consume the selected conversion value
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.25),
+            borderRadius: BorderRadius.circular(10)
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10, vertical: 5,
+          ),
+          child: Consumer(
+            builder: (context, ref, child) {
+              return Text(ref.watch(tempInverseConversionProvider).label,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 30
+                )
+              );
+            },
+          ),
+        )
+      ],
+    );
+  }
+}
+
+</code></pre>
+<h2 is-upgraded>NOTE ###:</h2>
+<p><strong>Consumer</strong> widgets are widgets available in Riverpod and are very useful whenever you want only a portion of your widget tree to rebuild, and not everything inside the parent widget&#39;s <strong>build</strong> method, thus making updates to the UI more efficient and performant.</p>
+<p>Let&#39;s get back to our <strong>GeminiTempMain</strong>&#39;s <strong>Column</strong> widget, and right under the <strong>GeminiTempDisplay</strong> widget, add some spacing, to give it some breathing room, as such:</p>
+<pre><code language="language-dart" class="language-dart">// rest of the code omitted;
+// const GeminiTempDisplay() &lt;- do not add this, just as a marker
+
+const SizedBox(height: 24),
+
+
+</code></pre>
+<p>Give it a run and confirm that you can see the following output, proof that things are connected:</p>
+<p class="image-container"><img alt="App" src="img/46d510b789708fcc.png"></p>
+<p>Looking nice - proceed to the next step when ready!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Receive the User&#39;s Input" duration="0">
+        <p>And we&#39;ll continue with our widget composition approach of splitting UI functionality into its discrete regions. This time we&#39;ll tackle the <strong>GeminiTempInput</strong> widget, but some of the functionality inside will be extracted into a separate widget called <strong>GeminiTempSelector</strong>, making things better distributed and encapsulated.</p>
+<p>Let&#39;s proceed!</p>
+<p class="image-container"><img alt="App" src="img/7be0792e57b5bcaa.png"></p>
+<p>Back into our <strong>GeminiTempMain</strong>&#39;s <strong>Column</strong> widget, add another widget placeholder widget called <strong>GeminiTempInput</strong> - this will encapsulate the user&#39;s ability to input their desired temp, select the temp conversion and send the request to Gemini. Add this as the last widget inside the column:</p>
+<pre><code language="language-dart" class="language-dart">// rest of the code omitted;
+// last widget in the column, below the spacing SizedBox
+
+const GeminiTempInput(),
+
+</code></pre>
+<p>Let&#39;s go ahead and add the code for the <strong>GeminiTempInput</strong> which comprises the following structure:</p>
+<ul>
+<li>a <strong>Container</strong> widget with some decoration to add border, border radius, padding, etc.</li>
+<li>as its inmediate child, a <strong>Row</strong> widget laying out its children horizontally, consisting of: <ul>
+<li>The <strong>GeminiTempSelector</strong> widget (will be added later down this lab)</li>
+<li>an <strong>Expanded</strong> widget wrapping a <strong>TextFormField</strong> widget for receiving input from the user in the form of only digits (thanks to the <strong>FilteringTextInputFormatter.digitsOnly</strong> input formatter); some special decoration with a max length of 3 characters, and the ability to handle whenever the user provides input via its <strong>onChanged</strong> event, to subsequently update the <strong>tempInputValueProvider</strong> provider and capture the user&#39;s input.</li>
+<li>a custom button made up of a <strong>Container</strong> widget, wrapped inside a <strong>GestureDetector</strong> and a <strong>MouseRegion</strong> so it detects the cursor on the web.</li>
+</ul>
+</li>
+</ul>
+<p>Notice how we trigger the workflow by checking the custom button&#39;s <strong>onTap</strong> event:</p>
+<ul>
+<li>we watch on the <strong>tempInputValueProvider</strong> value to check whether is empty or not so we can enable / disable the button accordingly</li>
+<li>then we call the method <strong>convertTemp</strong> off of the <strong>geminiRetrievalLocalVMProvider</strong> viewmodel in order to trigger the workflow, otherwise return <strong>null</strong> to disable its functionality</li>
+</ul>
+<p>Grab the code below and bring it into the <strong>main.dart</strong>:</p>
+<pre><code language="language-dart" class="language-dart">class GeminiTempInput extends ConsumerWidget {
+  const GeminiTempInput({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      width: 350,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15, 
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          width: 20,
+          color: Colors.white.withOpacity(0.25),
+          strokeAlign: BorderSide.strokeAlignOutside
+        )
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+
+          // &lt;= ADD THE GEMINI_TEMP_SELECTOR HERE ONCE CREATED
+
+            // receive user&#39;s input
+            Expanded(
+                child: TextFormField(
+                controller: ref.read(tempFieldController),
+                style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 80, color: Colors.black),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                    borderSide: BorderSide.none
+                    ),
+                    hintText: &#39;- -&#39;,
+                    hintStyle: TextStyle(color: Colors.grey),
+                    hintMaxLines: null,
+                ),
+                maxLength: 3,
+                textAlign: TextAlign.center,
+                onChanged: (value) {
+                    ref.read(tempInputValueProvider.notifier).state = value;
+                },
+                ),
+            ),
+
+            // custom styled button to trigger the workflow
+            MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                onTap: ref.watch(tempInputValueProvider).isNotEmpty ? () {
+                    ref.read(geminiRetrievalLocalVMProvider.notifier).convertTemp();
+                } : null,
+                child: Container(
+                    height: 130,
+                    decoration: BoxDecoration(
+                    color: ref.watch(tempInputValueProvider).isNotEmpty ? Colors.purple : Colors.grey.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(10)
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                    horizontal: 10, vertical: 5,
+                    ),
+                    child: const Icon(Icons.chevron_right,
+                    color: Colors.white,
+                    size: 30)
+                    ),
+                ),
+            ),
+        ],
+      )
+    );
+  }
+}
+
+</code></pre>
+<p>Save your work and rebuild the app. Take it for a spin, with the caveat that you can only convert temperatures from Celsius to Fahrenheit as it is the default value, and we cannot switch at the moment.</p>
+<p class="image-container"><img alt="App" src="img/d47ba0aef36f757a.gif"></p>
+<p>Sweet! Things are looking snazzy! Now let&#39;s wrap things up by adding the ability to switch to the desired conversion.</p>
+<h2 is-upgraded>Add the GeminiTempSelector</h2>
+<p>Let&#39;s go back up to our <strong>GeminiTempInput</strong> widget and find the placeholder line that says <strong>&#34;ADD THE GEMINI_TEMP_SELECTOR HERE ONCE CREATED&#34;</strong>, and replace it by our placeholder widget name called <strong>GeminiTempSelector</strong>, as such:</p>
+<pre><code language="language-dart" class="language-dart">// rest of the code omitted;
+// replace line by this:
+
+const GeminiTempSelector(),
+
+</code></pre>
+<p>This widget is composed as follows:</p>
+<ul>
+<li>a <strong>ConsumerWidget</strong> since we want to watch for the selected conversion option and rebuild accordingly, thanks to the <strong>tempConversionOptionProvider</strong> provider</li>
+<li>a <strong>Column</strong> widget with two custom buttons based on the values of the <strong>GeminiTempOptions</strong> enumeration; we build them programmatically by looping through the enum values and creating a custom button out of a styled <strong>Container</strong>, wrapped inside a <strong>GestureDetector</strong> wrapped in turn by a <strong>MouseRegion</strong> widget.</li>
+<li>Depending on the currently selected <strong>GeminiTempOptions</strong> enum value, we will display the corresponding button as selected or unselected, to illustrate the current conversion operation being performed.</li>
+</ul>
+<p>Add this code in your <strong>main.dart</strong> file:</p>
+<pre><code language="language-dart" class="language-dart">class GeminiTempSelector extends ConsumerWidget {
+  const GeminiTempSelector({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    final conversion = ref.watch(tempConversionOptionProvider);
+
+    // color configuration
+    final selectedColor = Colors.purple.withOpacity(0.5);
+    final unselectedColor = Colors.purple.withOpacity(0.125);
+
+    const selectedLabel = Colors.white;
+    final unselectedLabel = Colors.purple.withOpacity(0.5);
+
+    return Column(
+      children: List.generate(
+        GeminiTempOptions.values.length, (index) {
+
+          var tempOption = GeminiTempOptions.values[index];
+          
+          return MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                ref.read(geminiRetrievalLocalVMProvider.notifier).onSelectConversion(tempOption);
+              },
+              child: Container(
+                margin: EdgeInsets.only(bottom: index &lt; GeminiTempOptions.values.length - 1 ? 20 : 0),
+                decoration: BoxDecoration(
+                  color: conversion == tempOption ? selectedColor : unselectedColor,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10, vertical: 5,
+                ),
+                child: Text(tempOption.label, style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: conversion == tempOption ? selectedLabel : unselectedLabel,
+                  fontSize: 30)
+                ),
+              ),
+            ),
+          );
+        }
+      ),
+    );
+  }
+}
+
+</code></pre>
+<p>With this in place, take it for one last spin and run through the following scenarios:</p>
+<ul>
+<li>try to input characters; you shouldn&#39;t be allowed</li>
+<li>add a value in Fahrenheit; notice the Celsius value above in the GeminiTempDisplay</li>
+<li>see the submit arrow button enabling as you input digits</li>
+<li>submit a value, notice the progress indicator</li>
+<li>after a second or two, see the converted value above</li>
+<li>toggle the conversion options from Celsius and Fahrenheit and viceversa; notice toggling correctly</li>
+<li>run this scenario between several conversions</li>
+</ul>
+<p class="image-container"><img alt="App" src="img/75bcde754e24035b.gif"></p>
+<p>App is looking really good, and fully functional! Love how we can leverage the power of Gemini to build apps where Gemini provides us with the data we need - all we need is prompt it for it, and voilá!</p>
+<p>If you made all the way to this step, congrats on getting to this point. Hope you learned a thing or two about Flutter and how to supercharge your Flutter web apps with the power of AI!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Wrap-up" duration="0">
+        <p>In this codelab, we accomplished the following:</p>
+<ul>
+<li>Created a Flutter Web App</li>
+<li>Set up the State Management foundation for it</li>
+<li>Implemented Riverpod as our web app&#39;s default state management strategy</li>
+<li>Use the <strong>StateProvider</strong>, <strong>StateNotifierProvider</strong>, <strong>ConsumerWidget</strong> and <strong>Consumer</strong> from <strong>Riverpod</strong></li>
+<li>Implemented the MVVM pattern to create a clean separation of concerns</li>
+<li>Implemented Gemini via the Google AI Dart SDK to serve as a backend that produces valid, consumable JSON for our app</li>
+<li>Had fun along the way building cool UIs in Flutter!!!!!</li>
+</ul>
+<h2 is-upgraded>Please don&#39;t forget to follow me on social media:</h2>
+<ul>
+<li>On Twitter (<a href="https://www.twitter.com/drcoderz" target="_blank">@drcoderz</a>)</li>
+<li>On YouTube (<a href="https://www.youtube.com/channel/UCKsp3r1ERjCpKJtD2n5WtPg" target="_blank">Roman Just Codes</a>)</li>
+<li>On my <a href="https://romanjustcodes.web.app/" target="_blank">Personal Portfolio</a></li>
+<li>On <a href="https://medium.com/@romanejaquez" target="_blank">Medium</a></li>
+<li>On <a href="https://www.linkedin.com/in/roman-jaquez-8941a424/" target="_blank">LinkedIn</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Full Code" duration="0">
+        <p>Here&#39;s the full code for this lab (available as a <a href="https://gist.github.com/romanejaquez/9654aa973db2eda58f9f00ae1a738bf9" target="_blank">public Gist</a>), in case you fell behind or couldn&#39;t get yours to work for some reason. Enjoy!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements-tmp/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements-tmp/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements-tmp/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements-tmp/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
+  <script>
+    $(function() {
+      $('#done').removeAttr('href');
+      $('#done').css('cursor', 'pointer');
+      $('#done').click(function () { 
+        window.location.href = 'https://romanjustcodes.web.app/#/workshops';
+      });
+    });
+  </script>
+</body>
+</html>
