@@ -42,8 +42,9 @@
 <h2 is-upgraded>Prerequisites:</h2>
 <ul>
 <li>Install the <a href="https://docs.flutter.dev/get-started/install?_gl=1*1brl6tq*_up*MQ..&gclid=Cj0KCQjwlN6wBhCcARIsAKZvD5glFQAhQexfPyPp_iD_d8TDJXVEkrWi764bce2rvf0kCwIab8ycg2QaApVeEALw_wcB&gclsrc=aw.ds" target="_blank">Flutter SDK</a></li>
+<li>Your preferred IDE (preferably <a href="https://code.visualstudio.com" target="_blank">Visual Studio Code</a>)</li>
 <li>Install the <a href="https://pub.dev/packages/google_generative_ai" target="_blank">Google AI Dart SDK</a> (plus other dependencies)</li>
-<li>Get a Gemini API Key using <a href="https://ai.google.dev/?authuser=2" target="_blank">Google AI Studio</a></li>
+<li>Get a Gemini API Key using <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a></li>
 </ul>
 
 
@@ -55,6 +56,20 @@
 <p>Let&#39;s perform the following steps:</p>
 <ul>
 <li>Download the <a href="https://docs.flutter.dev/get-started/install?_gl=1*1brl6tq*_up*MQ..&gclid=Cj0KCQjwlN6wBhCcARIsAKZvD5glFQAhQexfPyPp_iD_d8TDJXVEkrWi764bce2rvf0kCwIab8ycg2QaApVeEALw_wcB&gclsrc=aw.ds" target="_blank">Flutter SDK</a> according to your corresponding machine architecture and set it up to develop for the web. Proceed with the installation.</li>
+</ul>
+<p><strong>NOTE</strong>: make sure you can run the command <code>flutter doctor</code> at a minimum before proceeding to the next step, as this is proof that the Flutter SDK is set up correctly in your environment.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create the Flutter Project" duration="0">
+        <p>Using your preferred IDE (in our case, Visual Studio Code), we&#39;ll open up a command line and run the following command in order to create the base Flutter project:</p>
+<pre><code language="language-dart" class="language-dart">flutter create gemini_temp_app
+
+</code></pre>
+<p>This will create a Flutter project called <strong>gemini_temp_app</strong> with some scaffolding and boilerplate code in place. We&#39;ll get rid of most of it later down this session.</p>
+<p>After project creation, make sure to <code>cd</code> into the project or re-open Visual Studio Code into the folder created for the project (<strong>gemini_temp_app</strong>) before you continue.</p>
+<ul>
 <li>We&#39;ll use Chrome as our device to test so once the Flutter SDK is installed, take it for a first spin by running the following command:</li>
 </ul>
 <pre><code language="language-dart" class="language-dart">flutter run -d chrome
@@ -82,7 +97,7 @@
       <google-codelab-step label="Get a Gemini API key" duration="0">
         <p><a href="https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChcSEwjm0qCA07uFAxWoakcBHTb9B_MYABABGgJxdQ&ase=2&gclid=Cj0KCQjwlN6wBhCcARIsAKZvD5hhoX4NBHsU5ajiwLmUJPqSgkjHLFkYdwpLZz5L-4iLKWfrtgmNfJgaAuI6EALw_wcB&ohost=www.google.com&cid=CAESVuD2ygxQWbuyb9o3P5JbSCgJLYFXknTYAZqfnIiizTEcreRZPyrGdiOWIPnhiBe9mg8sBm_XQc75xX3XIN_D201vzmN_PQsNO8kchLtqAHMU0Unp7uE7&sig=AOD64_1dPKqP4bfwQrF-Dc-vo2_G2tN9jg&q&nis=4&adurl&ved=2ahUKEwiDjJqA07uFAxXwg4kEHdU9CD4Q0Qx6BAgHEAE" target="_blank">Gemini</a> is a family of multimodal large language models developed by Google DeepMind, serving as the successor to LaMDA and PaLM 2. Comprising Gemini Ultra, Gemini Pro, and Gemini Nano, it was announced on December 6, 2023, positioned as a competitor to OpenAI&#39;s GPT-4.</p>
 <p>In order to talk to Gemini, we&#39;ll use the Gemini API, and for that we&#39;ll require an API Key, which we&#39;ll supply to Flutter through the Google AI Dark SDK.</p>
-<p>Go to <a href="aistudio.google.com" target="_blank">Google AI Studio</a>, and sign in with a GMail account.</p>
+<p>Go to <a href="https://aistudio.google.com" target="_blank">Google AI Studio</a>, and sign in with a GMail account.</p>
 <p class="image-container"><img alt="App" src="img/17ead8ebc43c8cc1.png"></p>
 <p>Since we&#39;ll be developing in our own environment, make sure to select the <strong>Develop in your own environment</strong> option - click on <strong>Get API key</strong>:</p>
 <p class="image-container"><img alt="App" src="img/845df667196445b.png"></p>
@@ -231,9 +246,9 @@ Center(
 <p>We are using the <strong>Community Material Icons</strong> package, which gives you a large selection of widgets to choose from. Check them out <a href="https://pictogrammers.com/library/mdi/" target="_blank">here</a>.</p>
 <p>As our first child in the <strong>Column</strong> widget, add the following piece of code:</p>
 <pre><code language="language-dart" class="language-dart">Icon(
-    CommunityMaterialIcons.leaf_maple, 
-    size: 100, 
-    color: Colors.white.withOpacity(0.75)
+  CommunityMaterialIcons.leaf_maple, 
+  size: 100, 
+  color: Colors.white.withOpacity(0.75)
 ),
 
 </code></pre>
@@ -380,6 +395,7 @@ final tempInverseConversionProvider = Provider((ref) {
 <li>notify the UI that the value is ready to consume</li>
 </ul>
 <p>Add the following piece of code inside the viewmodel class:</p>
+<h2 is-upgraded>DO NOT FORGET TO REPLACE THE API_KEY WITH YOUR OWN!</h2>
 <pre><code language="language-dart" class="language-dart">// inside our viewmodel class...
 
 Future&lt;void&gt; convertTemp() async {
@@ -435,9 +451,9 @@ Future&lt;void&gt; convertTemp() async {
 <h2 is-upgraded>Add the ability to reset values</h2>
 <p>Inside our viewmodel class, add a method called <strong>resetValues</strong> to reset the values back to default to allow the user to input another temp to be converted, as such:</p>
 <pre><code language="language-dart" class="language-dart">void resetValues() {
-    ref.read(tempFieldController).clear();
-    ref.read(tempInputValueProvider.notifier).state = &#39;&#39;;
-    ref.read(tempDisplayValueProvider.notifier).state = 0;
+  ref.read(tempFieldController).clear();
+  ref.read(tempInputValueProvider.notifier).state = &#39;&#39;;
+  ref.read(tempDisplayValueProvider.notifier).state = 0;
 }
 
 </code></pre>
@@ -445,8 +461,8 @@ Future&lt;void&gt; convertTemp() async {
 <h2 is-upgraded>Add the ability to capture the desired temp conversions</h2>
 <p>Add one more method to capture the selection from the user of the conversion they want to perform. This will be consumed by a widget later that collects this value from the user. Add it for now:</p>
 <pre><code language="language-dart" class="language-dart">void onSelectConversion(GeminiTempOptions tempOption) {
-    resetValues();
-    ref.read(tempConversionOptionProvider.notifier).state = tempOption;
+  resetValues();
+  ref.read(tempConversionOptionProvider.notifier).state = tempOption;
 }
 
 </code></pre>
@@ -573,7 +589,7 @@ class GeminiTempDisplay extends StatelessWidget {
 }
 
 </code></pre>
-<h2 is-upgraded>NOTE ###:</h2>
+<h2 is-upgraded>NOTE:</h2>
 <p><strong>Consumer</strong> widgets are widgets available in Riverpod and are very useful whenever you want only a portion of your widget tree to rebuild, and not everything inside the parent widget&#39;s <strong>build</strong> method, thus making updates to the UI more efficient and performant.</p>
 <p>Let&#39;s get back to our <strong>GeminiTempMain</strong>&#39;s <strong>Column</strong> widget, and right under the <strong>GeminiTempDisplay</strong> widget, add some spacing, to give it some breathing room, as such:</p>
 <pre><code language="language-dart" class="language-dart">// rest of the code omitted;
@@ -790,6 +806,8 @@ const GeminiTempSelector(),
 <li>Implemented Gemini via the Google AI Dart SDK to serve as a backend that produces valid, consumable JSON for our app</li>
 <li>Had fun along the way building cool UIs in Flutter!!!!!</li>
 </ul>
+<h2 is-upgraded>ADDITIONAL NOTES:</h2>
+<p>Try not to keep your Gemini API key hard-coded in your project when making this project publicly available. You should follow best practices when storing your API keys. Here&#39;s a <a href="https://codewithandrea.com/articles/flutter-api-keys-dart-define-env-files/" target="_blank">great article</a> on how to do so by Andrea Bizzotto on storing API keys in Flutter.</p>
 <h2 is-upgraded>Please don&#39;t forget to follow me on social media:</h2>
 <ul>
 <li>On Twitter (<a href="https://www.twitter.com/drcoderz" target="_blank">@drcoderz</a>)</li>
